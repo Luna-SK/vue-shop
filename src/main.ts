@@ -1,9 +1,27 @@
-import { createApp } from 'vue';
-import App from './App.vue';
-import router from './router';
+import { createApp } from 'vue'
+import App from './App.vue'
 
-const app = createApp(App);
+// import vue-router
+import router from './router'
 
-app.use(router);
+// import element-plus icons
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
-app.mount('#app');
+// import global css
+import '@/assets/css/global.css'
+
+import 'element-plus/dist/index.css'
+
+import axios from 'axios'
+axios.defaults.baseURL = 'http://localhost:8080'
+
+const app = createApp(App)
+
+app.use(router)
+
+// register element-plus icons
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+  app.component(key, component)
+}
+
+app.mount('#app')

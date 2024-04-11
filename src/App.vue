@@ -1,9 +1,8 @@
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <div>
-
+  <div id="main-app">
+    <RouterView></RouterView>
   </div>
 </template>
 
