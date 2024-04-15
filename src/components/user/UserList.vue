@@ -38,7 +38,7 @@
                         <el-switch v-model="row.mg_state" @change="userStateChanged(row)" />
                     </template>
                 </el-table-column>
-                <el-table-column label="操作">
+                <el-table-column width="200px" label="操作">
                     <template #default="{ row }">
                         <!-- modify button -->
                         <el-tooltip effect="dark" content="修改" placement="top" :enterable="false">
@@ -50,7 +50,7 @@
                         </el-tooltip>
                         <!-- assign role button -->
                         <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
-                            <el-button type="warning" :icon="Setting" />
+                            <el-button type="warning" :icon="Setting" @click="setRole(row)" />
                         </el-tooltip>
                     </template>
                 </el-table-column>
@@ -104,6 +104,27 @@
                 <div class="dialog-footer">
                     <el-button @click="editDialogVisible = false">取 消</el-button>
                     <el-button type="primary" @click="editUserInfo">
+                        确 定
+                    </el-button>
+                </div>
+            </template>
+        </el-dialog>
+
+        <!-- dialog for assigning role -->
+        <el-dialog v-model="setRoleDialogVisible" title="分配角色" width="50%" @close="setRoleDialogClosed">
+            <div>
+                <p>当前的用户：{{ userInfo.username }}</p>
+                <p>当前的角色：{{ userInfo.role_name }}</p>
+                <p>分配新角色：
+                    <el-select v-model="selectedRoleId" placeholder="请选择" size="large" style="width: 240px">
+                        <el-option v-for="item in rolesList" :key="item.id" :label="item.roleName" :value="item.id" />
+                    </el-select>
+                </p>
+            </div>
+            <template #footer>
+                <div class="dialog-footer">
+                    <el-button @click="setRoleDialogVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="saveRoleInfo">
                         确 定
                     </el-button>
                 </div>
@@ -285,8 +306,8 @@ const showEditDialog = (id: number) => {
             return ElMessage.error('获取用户信息失败');
         }
         editForm.value = res.data;
+        editDialogVisible.value = true;
     });
-    editDialogVisible.value = true;
 };
 
 interface RuleEditForm {
@@ -351,30 +372,6 @@ const editUserInfo = () => {
     });
 };
 
-const open = () => {
-    ElMessageBox.confirm(
-        'proxy will permanently delete the file. Continue?',
-        'Warning',
-        {
-            confirmButtonText: 'OK',
-            cancelButtonText: 'Cancel',
-            type: 'warning',
-        }
-    )
-        .then(() => {
-            ElMessage({
-                type: 'success',
-                message: 'Delete completed',
-            });
-        })
-        .catch(() => {
-            ElMessage({
-                type: 'info',
-                message: 'Delete canceled',
-            });
-        });
-};
-
 // remove user information by id
 const removeUserById = (id: number) => {
     ElMessageBox.confirm(
@@ -385,25 +382,59 @@ const removeUserById = (id: number) => {
             cancelButtonText: '取消',
             type: 'warning',
         }
-    )
-        .then(() => {
-            axios.delete(`users/${id}`).then(({ data: res }) => {
-                if (res.meta.status !== 200) {
-                    return ElMessage.error('删除用户失败');
-                }
-            })
-            ElMessage({
-                type: 'success',
-                message: '删除用户成功',
-            });
-            getUserList();
-        })
-        .catch(() => {
-            ElMessage({
-                type: 'info',
-                message: '已取消删除',
-            });
+    ).then(() => {
+        axios.delete(`users/${id}`).then(({ data: res }) => {
+            if (res.meta.status !== 200) {
+                return ElMessage.error('删除用户失败');
+            }
         });
+        ElMessage.success('删除用户成功');
+        getUserList();
+    }).catch(() => {
+        ElMessage.info('已取消删除');
+    });
+};
+
+const setRoleDialogVisible = ref(false);
+
+const userInfo: any = ref({});
+
+const rolesList = ref<any[]>([]);
+
+// selected role id
+const selectedRoleId = ref<number | string>('');
+
+const setRole = (userInf: any) => {
+    userInfo.value = userInf;
+    // get all roles list before showing the dialog
+    axios.get('roles').then(({ data: res }) => {
+        if (res.meta.status !== 200) {
+            return ElMessage.error('获取角色列表失败');
+        }
+        rolesList.value = res.data;
+        console.log(rolesList.value);
+        setRoleDialogVisible.value = true;
+    });
+};
+
+// click button to save role information
+const saveRoleInfo = () => {
+    axios.put(`users/${userInfo.value.id}/role`, {
+        rid: selectedRoleId.value
+    }).then(({ data: res }) => {
+        if (res.meta.status !== 200) {
+            return ElMessage.error('更新角色失败');
+        }
+        ElMessage.success('更新角色成功');
+        getUserList();
+        setRoleDialogVisible.value = false;
+    });
+};
+
+// monitor the closing event of the dialog
+const setRoleDialogClosed = () => {
+    selectedRoleId.value = '';
+    userInfo.value = {};
 };
 
 onMounted(() => {

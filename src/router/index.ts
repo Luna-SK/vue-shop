@@ -23,6 +23,14 @@ const router = createRouter({
         {
           path: '/users',
           component: () => import('@/components/user/UserList.vue')
+        },
+        {
+          path: '/rights',
+          component: () => import('@/components/power/RightsList.vue')
+        },
+        {
+          path: '/roles',
+          component: () => import('@/components/power/RolesList.vue')
         }
       ]
     }
