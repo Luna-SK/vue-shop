@@ -31,6 +31,10 @@ const router = createRouter({
         {
           path: '/roles',
           component: () => import('@/components/power/RolesList.vue')
+        },
+        {
+          path: '/categories',
+          component: () => import('@/components/goods/CateManage.vue')
         }
       ]
     }
