@@ -332,7 +332,6 @@ onMounted(() => {
 
 <style lang="less" scoped>
 .treeTable {
-    margin-top: 15px;
-    margin-bottom: 15px;
+    margin: 15px 0;
 }
 </style>

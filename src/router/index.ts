@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router';
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -35,21 +35,25 @@ const router = createRouter({
         {
           path: '/categories',
           component: () => import('@/components/goods/CateManage.vue')
+        },
+        {
+          path: '/params',
+          component: () => import('@/components/goods/CateParams.vue')
         }
       ]
     }
   ]
-})
+});
 
 router.beforeEach((to, from, next) => {
   if (to.path == '/login') {
-    next()
+    next();
   }
-  const tokenStr = window.sessionStorage.getItem('token')
+  const tokenStr = window.sessionStorage.getItem('token');
   if (!tokenStr) {
-    next('/login')
+    next('/login');
   }
-  next()
-})
+  next();
+});
 
-export default router
+export default router;
