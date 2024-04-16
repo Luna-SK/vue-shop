@@ -262,26 +262,24 @@ const removeRoleById = (id: number) => {
 
 const removeRightById = (role: any, rightId: number) => {
     ElMessageBox.confirm(
-        'proxy will permanently delete the file. Continue?',
+        '此操作将永久删除该角色，是否继续?',
         '提示',
         {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning',
         }
-    )
-        .then(() => {
-            axios.delete(`/roles/${role.id}/rights/${rightId}`)
-                .then(({ data: res }) => {
-                    if (res.meta.status !== 200) {
-                        return ElMessage.error('删除权限失败！');
-                    }
-                    role.children = res.data;
-                });
-        })
-        .catch(() => {
-            ElMessage.info('已取消删除');
-        });
+    ).then(() => {
+        axios.delete(`/roles/${role.id}/rights/${rightId}`)
+            .then(({ data: res }) => {
+                if (res.meta.status !== 200) {
+                    return ElMessage.error('删除权限失败！');
+                }
+                role.children = res.data;
+            });
+    }).catch(() => {
+        ElMessage.info('已取消删除');
+    });
 };
 
 interface Tree {
@@ -348,7 +346,7 @@ const allocateRights = () => {
         getRoleList();
         ElMessage.success('分配权限成功！');
     });
-}
+};
 
 onMounted(() => {
     getRoleList();
