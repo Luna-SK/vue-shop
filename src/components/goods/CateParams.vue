@@ -192,7 +192,6 @@ const getParamsData = () => {
             sel: activeName.value
         }
     }).then(({ data: res }) => {
-        console.log(res.data);
         if (res.meta.status !== 200 && !isBtnDisbaled.value) {
             return ElMessage.error('获取参数列表失败！');
         }

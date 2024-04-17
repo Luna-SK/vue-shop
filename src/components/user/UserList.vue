@@ -1,135 +1,138 @@
 <template>
     <div>
-        <!-- breadcrumb navigation region -->
-        <el-breadcrumb :separator-icon="ArrowRight">
-            <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item>用户管理</el-breadcrumb-item>
-            <el-breadcrumb-item>用户列表</el-breadcrumb-item>
-        </el-breadcrumb>
-        <!-- card view region -->
-        <el-card>
-            <!-- search and add region -->
-            <el-row :gutter="20">
-                <el-col :span="7">
-                    <el-input placeholder="请输入内容" v-model="queryInfo.query" clearable @clear="getUserList">
-                        <template #append>
-                            <el-button :icon="Search" @click="getUserList" />
+        <el-config-provider :locale="zhCn">
+            <!-- breadcrumb navigation region -->
+            <el-breadcrumb :separator-icon="ArrowRight">
+                <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+                <el-breadcrumb-item>用户管理</el-breadcrumb-item>
+                <el-breadcrumb-item>用户列表</el-breadcrumb-item>
+            </el-breadcrumb>
+            <!-- card view region -->
+            <el-card>
+                <!-- search and add region -->
+                <el-row :gutter="20">
+                    <el-col :span="7">
+                        <el-input placeholder="请输入内容" v-model="queryInfo.query" clearable @clear="getUserList">
+                            <template #append>
+                                <el-button :icon="Search" @click="getUserList" />
+                            </template>
+                        </el-input>
+                    </el-col>
+                    <el-col :span="4">
+                        <el-button type="primary" @click="addDialogVisible = true">添加用户</el-button>
+                    </el-col>
+                </el-row>
+                <!-- user list region -->
+                <el-table :data="userList" border stripe>
+                    <el-table-column type="index" label="#">
+                    </el-table-column>
+                    <el-table-column label="姓名" prop="username">
+                    </el-table-column>
+                    <el-table-column label="邮箱" prop="email">
+                    </el-table-column>
+                    <el-table-column label="电话" prop="mobile">
+                    </el-table-column>
+                    <el-table-column label="角色" prop="role_name">
+                    </el-table-column>
+                    <el-table-column label="状态">
+                        <template #default="{ row }">
+                            <el-switch v-model="row.mg_state" @change="userStateChanged(row)" />
                         </template>
-                    </el-input>
-                </el-col>
-                <el-col :span="4">
-                    <el-button type="primary" @click="addDialogVisible = true">添加用户</el-button>
-                </el-col>
-            </el-row>
-            <!-- user list region -->
-            <el-table :data="userList" border stripe>
-                <el-table-column type="index" label="#">
-                </el-table-column>
-                <el-table-column label="姓名" prop="username">
-                </el-table-column>
-                <el-table-column label="邮箱" prop="email">
-                </el-table-column>
-                <el-table-column label="电话" prop="mobile">
-                </el-table-column>
-                <el-table-column label="角色" prop="role_name">
-                </el-table-column>
-                <el-table-column label="状态">
-                    <template #default="{ row }">
-                        <el-switch v-model="row.mg_state" @change="userStateChanged(row)" />
-                    </template>
-                </el-table-column>
-                <el-table-column width="200px" label="操作">
-                    <template #default="{ row }">
-                        <!-- modify button -->
-                        <el-tooltip effect="dark" content="修改" placement="top" :enterable="false">
-                            <el-button type="primary" :icon="Edit" @click="showEditDialog(row.id)" />
-                        </el-tooltip>
-                        <!-- delete button -->
-                        <el-tooltip effect="dark" content="删除" placement="top" :enterable="false">
-                            <el-button type="danger" :icon="Delete" @click="removeUserById(row.id)" />
-                        </el-tooltip>
-                        <!-- assign role button -->
-                        <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
-                            <el-button type="warning" :icon="Setting" @click="setRole(row)" />
-                        </el-tooltip>
-                    </template>
-                </el-table-column>
-            </el-table>
-            <!-- pagination region -->
-            <el-pagination v-model:current-page="queryInfo.pagenum" v-model:page-size="queryInfo.pagesize"
-                :page-sizes="[1, 2, 5, 10]" layout="total, sizes, prev, pager, next, jumper" :total="total"
-                @size-change="handleSizeChange" @current-change="handleCurrentChange" />
-        </el-card>
-        <!-- dialog for adding user -->
-        <el-dialog v-model="addDialogVisible" title="添加用户" width="50%" @close="addDialogClosed">
-            <el-form ref="addFormRef" style="max-width: 600px" :model="addForm" :rules="addFormRules" label-width="auto"
-                status-icon>
-                <el-form-item label="用户名" prop="username">
-                    <el-input v-model="addForm.username" />
-                </el-form-item>
-                <el-form-item label="密码" prop="password">
-                    <el-input v-model="addForm.password" />
-                </el-form-item>
-                <el-form-item label="邮箱" prop="email">
-                    <el-input v-model="addForm.email" />
-                </el-form-item>
-                <el-form-item label="手机" prop="mobile">
-                    <el-input v-model="addForm.mobile" />
-                </el-form-item>
-            </el-form>
-            <template #footer>
-                <div class="dialog-footer">
-                    <el-button @click="addDialogVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="addUser">
-                        确 定
-                    </el-button>
-                </div>
-            </template>
-        </el-dialog>
-        <!-- dialog for editing user -->
-        <el-dialog v-model="editDialogVisible" title="修改用户" width="50%" @close="editDialogClosed">
-            <el-form ref="editFormRef" style="max-width: 600px" :model="editForm" :rules="editFormRules"
-                label-width="auto" status-icon>
-                <el-form-item label="用户名">
-                    <el-input v-model="editForm.username" disabled />
-                </el-form-item>
-                <el-form-item label="邮箱" prop="email">
-                    <el-input v-model="editForm.email" />
-                </el-form-item>
-                <el-form-item label="手机号" prop="mobile">
-                    <el-input v-model="editForm.mobile" />
-                </el-form-item>
-            </el-form>
-            <template #footer>
-                <div class="dialog-footer">
-                    <el-button @click="editDialogVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="editUserInfo">
-                        确 定
-                    </el-button>
-                </div>
-            </template>
-        </el-dialog>
+                    </el-table-column>
+                    <el-table-column width="200px" label="操作">
+                        <template #default="{ row }">
+                            <!-- modify button -->
+                            <el-tooltip effect="dark" content="修改" placement="top" :enterable="false">
+                                <el-button type="primary" :icon="Edit" @click="showEditDialog(row.id)" />
+                            </el-tooltip>
+                            <!-- delete button -->
+                            <el-tooltip effect="dark" content="删除" placement="top" :enterable="false">
+                                <el-button type="danger" :icon="Delete" @click="removeUserById(row.id)" />
+                            </el-tooltip>
+                            <!-- assign role button -->
+                            <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
+                                <el-button type="warning" :icon="Setting" @click="setRole(row)" />
+                            </el-tooltip>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <!-- pagination region -->
+                <el-pagination v-model:current-page="queryInfo.pagenum" v-model:page-size="queryInfo.pagesize"
+                    :page-sizes="[1, 2, 5, 10]" layout="total, sizes, prev, pager, next, jumper" :total="total"
+                    @size-change="handleSizeChange" @current-change="handleCurrentChange" background />
+            </el-card>
+            <!-- dialog for adding user -->
+            <el-dialog v-model="addDialogVisible" title="添加用户" width="50%" @close="addDialogClosed">
+                <el-form ref="addFormRef" style="max-width: 600px" :model="addForm" :rules="addFormRules"
+                    label-width="auto" status-icon>
+                    <el-form-item label="用户名" prop="username">
+                        <el-input v-model="addForm.username" />
+                    </el-form-item>
+                    <el-form-item label="密码" prop="password">
+                        <el-input v-model="addForm.password" />
+                    </el-form-item>
+                    <el-form-item label="邮箱" prop="email">
+                        <el-input v-model="addForm.email" />
+                    </el-form-item>
+                    <el-form-item label="手机" prop="mobile">
+                        <el-input v-model="addForm.mobile" />
+                    </el-form-item>
+                </el-form>
+                <template #footer>
+                    <div class="dialog-footer">
+                        <el-button @click="addDialogVisible = false">取 消</el-button>
+                        <el-button type="primary" @click="addUser">
+                            确 定
+                        </el-button>
+                    </div>
+                </template>
+            </el-dialog>
+            <!-- dialog for editing user -->
+            <el-dialog v-model="editDialogVisible" title="修改用户" width="50%" @close="editDialogClosed">
+                <el-form ref="editFormRef" style="max-width: 600px" :model="editForm" :rules="editFormRules"
+                    label-width="auto" status-icon>
+                    <el-form-item label="用户名">
+                        <el-input v-model="editForm.username" disabled />
+                    </el-form-item>
+                    <el-form-item label="邮箱" prop="email">
+                        <el-input v-model="editForm.email" />
+                    </el-form-item>
+                    <el-form-item label="手机号" prop="mobile">
+                        <el-input v-model="editForm.mobile" />
+                    </el-form-item>
+                </el-form>
+                <template #footer>
+                    <div class="dialog-footer">
+                        <el-button @click="editDialogVisible = false">取 消</el-button>
+                        <el-button type="primary" @click="editUserInfo">
+                            确 定
+                        </el-button>
+                    </div>
+                </template>
+            </el-dialog>
 
-        <!-- dialog for assigning role -->
-        <el-dialog v-model="setRoleDialogVisible" title="分配角色" width="50%" @close="setRoleDialogClosed">
-            <div>
-                <p>当前的用户：{{ userInfo.username }}</p>
-                <p>当前的角色：{{ userInfo.role_name }}</p>
-                <p>分配新角色：
-                    <el-select v-model="selectedRoleId" placeholder="请选择" size="large" style="width: 240px">
-                        <el-option v-for="item in rolesList" :key="item.id" :label="item.roleName" :value="item.id" />
-                    </el-select>
-                </p>
-            </div>
-            <template #footer>
-                <div class="dialog-footer">
-                    <el-button @click="setRoleDialogVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="saveRoleInfo">
-                        确 定
-                    </el-button>
+            <!-- dialog for assigning role -->
+            <el-dialog v-model="setRoleDialogVisible" title="分配角色" width="50%" @close="setRoleDialogClosed">
+                <div>
+                    <p>当前的用户：{{ userInfo.username }}</p>
+                    <p>当前的角色：{{ userInfo.role_name }}</p>
+                    <p>分配新角色：
+                        <el-select v-model="selectedRoleId" placeholder="请选择" size="large" style="width: 240px">
+                            <el-option v-for="item in rolesList" :key="item.id" :label="item.roleName"
+                                :value="item.id" />
+                        </el-select>
+                    </p>
                 </div>
-            </template>
-        </el-dialog>
+                <template #footer>
+                    <div class="dialog-footer">
+                        <el-button @click="setRoleDialogVisible = false">取 消</el-button>
+                        <el-button type="primary" @click="saveRoleInfo">
+                            确 定
+                        </el-button>
+                    </div>
+                </template>
+            </el-dialog>
+        </el-config-provider>
     </div>
 </template>
 
@@ -138,7 +141,8 @@ import { ArrowRight, Search, Edit, Delete, Setting } from '@element-plus/icons-v
 import { onMounted, ref, reactive } from 'vue';
 import axios from 'axios';
 import { ElMessage, ElMessageBox } from 'element-plus';
-import type { FormInstance, FormRules } from 'element-plus';
+import type { FormInstance, FormRules, ElConfigProvider } from 'element-plus';
+import zhCn from 'element-plus/es/locale/lang/zh-cn';
 
 const queryInfo = reactive({
     query: '',

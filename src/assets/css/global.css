@@ -24,3 +24,7 @@ body,
 .el-pagination {
   margin-top: 15px;
 }
+
+.el-step__title {
+  font-size: 15px !important;
+}

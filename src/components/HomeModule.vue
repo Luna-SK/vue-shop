@@ -20,10 +20,10 @@
             <template #title>
               <!-- icon -->
               <UserFilled style="width: 1em; height: 1em; margin-right: 10px" v-if="item.id === 125" />
-              <DocumentCopy style="width: 1em; height: 1em; margin-right: 10px" v-else-if="item.id === 145" />
-              <Goods style="width: 1em; height: 1em; margin-right: 10px" v-else-if="item.id === 165" />
-              <Box style="width: 1em; height: 1em; margin-right: 10px" v-else-if="item.id === 185" />
-              <TrendCharts style="width: 1em; height: 1em; margin-right: 10px" v-else-if="item.id === 205" />
+              <DocumentCopy style="width: 1em; height: 1em; margin-right: 10px" v-else-if="item.id === 103" />
+              <Goods style="width: 1em; height: 1em; margin-right: 10px" v-else-if="item.id === 101" />
+              <Box style="width: 1em; height: 1em; margin-right: 10px" v-else-if="item.id === 102" />
+              <TrendCharts style="width: 1em; height: 1em; margin-right: 10px" v-else-if="item.id === 145" />
               <!-- text -->
               <span>{{ item.authName }}</span>
             </template>
