@@ -66,7 +66,11 @@
                             <el-button type="primary">点击上传</el-button>
                         </el-upload>
                     </el-tab-pane>
-                    <el-tab-pane label="商品内容" :name="4">商品内容</el-tab-pane>
+                    <el-tab-pane label="商品内容" :name="4">
+                        <QuillEditor v-model:content="addForm.goods_introduce" />
+                        <!-- button to add goods -->
+                        <el-button type="primary" size="large" class="btn-add" @click="add">添加商品</el-button>
+                    </el-tab-pane>
                 </el-tabs>
             </el-form>
         </el-card>
@@ -84,6 +88,7 @@ import { ElMessage } from 'element-plus';
 import type { FormInstance, FormRules } from 'element-plus';
 import { computed, onMounted, reactive, ref } from 'vue';
 import { api, host } from '@/utils/serverInfo';
+import { QuillEditor } from '@vueup/vue-quill'
 
 const activeIndex = ref(0);
 
@@ -105,7 +110,9 @@ const addForm: any = reactive({
     // goods category array
     goods_cat: [],
     // picture array
-    pics: []
+    pics: [],
+    // goods information description
+    goods_introduce: ''
 });
 
 const addFormRules = reactive<FormRules<AddFormRules>>({
@@ -230,6 +237,18 @@ const handleSuccess = (response: any) => {
 
 const previewVisible = ref(false);
 
+const add = () => {
+    addFormRef.value?.validate((valid) => {
+        if (!valid) {
+            ElMessage.error('请填写必要的表单项');
+            return;
+        }
+        // add goods
+        // lodash cloneDeep(obj)
+        
+    })
+};
+
 onMounted(() => {
     getCateList();
 });
@@ -246,5 +265,9 @@ onMounted(() => {
 
 .preview-image {
     width: 100%;
+}
+
+.btn-add {
+    margin-top: 15px;
 }
 </style>

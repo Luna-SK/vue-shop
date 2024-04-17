@@ -12,6 +12,8 @@ import '@/assets/css/global.css'
 
 import 'element-plus/dist/index.css'
 
+import '@vueup/vue-quill/dist/vue-quill.snow.css'
+
 import axios from 'axios'
 
 import VXETable from 'vxe-table'
