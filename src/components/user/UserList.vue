@@ -416,7 +416,6 @@ const setRole = (userInf: any) => {
             return ElMessage.error('获取角色列表失败');
         }
         rolesList.value = res.data;
-        console.log(rolesList.value);
         setRoleDialogVisible.value = true;
     });
 };

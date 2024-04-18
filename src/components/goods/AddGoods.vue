@@ -89,6 +89,8 @@ import type { FormInstance, FormRules } from 'element-plus';
 import { computed, onMounted, reactive, ref } from 'vue';
 import { api, host } from '@/utils/serverInfo';
 import { QuillEditor } from '@vueup/vue-quill'
+import _ from 'lodash';
+import router from '@/router';
 
 const activeIndex = ref(0);
 
@@ -99,7 +101,7 @@ interface AddFormRules {
     goods_price: number;
     goods_weight: number;
     goods_number: number;
-    goods_cat: any[];
+    goods_cat: any;
 }
 
 const addForm: any = reactive({
@@ -112,7 +114,8 @@ const addForm: any = reactive({
     // picture array
     pics: [],
     // goods information description
-    goods_introduce: ''
+    goods_introduce: '',
+    attrs: []
 });
 
 const addFormRules = reactive<FormRules<AddFormRules>>({
@@ -187,7 +190,6 @@ const tabChanged = () => {
                 item.attr_vals = item.attr_vals ? item.attr_vals.split(' ') : [];
             });
             manyTableData.value = res.data;
-            console.log(res.data);
         });
     } else if (activeIndex.value === 2) {
         axios.get(`/categories/${cateId.value}/attributes`, {
@@ -199,7 +201,6 @@ const tabChanged = () => {
                 ElMessage.error('获取静态属性列表失败！');
             }
             onlyTableData.value = res.data;
-            console.log(res.data);
         });
     }
 };
@@ -207,7 +208,6 @@ const tabChanged = () => {
 const previewPath = ref('');
 
 const handlePreview = (file: any) => {
-    console.log(file.response.data.url);
     previewPath.value = host + file.response.data.url.substring(16);
     previewVisible.value = true;
 };
@@ -245,7 +245,32 @@ const add = () => {
         }
         // add goods
         // lodash cloneDeep(obj)
-        
+        const form = _.cloneDeep(addForm);
+        form.goods_cat = form.goods_cat.join(',');
+        // handle dynamic parameters
+        manyTableData.value.forEach((item: any) => {
+            addForm.attrs.push({
+                attr_id: item.attr_id,
+                attr_value: item.attr_vals.join(' ')
+            });
+        });
+        // handle static attributes
+        onlyTableData.value.forEach((item: any) => {
+            addForm.attrs.push({
+                attr_id: item.attr_id,
+                attr_value: item.attr_vals
+            });
+        });
+        form.attrs = [...addForm.attrs];
+        form.goods_introduce = form.goods_introduce.ops[0].insert;
+        axios.post('/goods', form).then(({ data: res }) => {
+            if (res.meta.status !== 201) {
+                ElMessage.error('添加商品失败');
+            } else {
+                ElMessage.success('添加商品成功');
+                router.push('/goods');
+            }
+        });
     })
 };
 

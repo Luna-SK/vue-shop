@@ -18,7 +18,7 @@
                         </el-input>
                     </el-col>
                     <el-col :span="4">
-                        <el-button type="primary" @click="goAddPage" >添加商品</el-button>
+                        <el-button type="primary" @click="goAddPage">添加商品</el-button>
                     </el-col>
                 </el-row>
                 <el-table :data="goodsList" border stripe>
@@ -72,7 +72,6 @@ const getGoodsList = () => {
         if (res.meta.status !== 200) {
             return ElMessage.error('获取商品列表失败');
         }
-        console.log(res.data);
         goodsList.value = res.data.goods;
         total.value = res.data.total;
     });

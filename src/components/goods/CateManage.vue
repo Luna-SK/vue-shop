@@ -206,7 +206,6 @@ const selectedKeys = ref([]);
 
 // trigger when selected item changes
 const parentCateChange = () => {
-    console.log(selectedKeys.value);
     // len(selectedKeys) !== 0: select parent category
     // len(selectedKeys) === 0: select root category
     if (selectedKeys.value.length > 0) {
@@ -271,7 +270,6 @@ const editCateDialogClosed = () => {
 const editCateId = ref(0);
 
 const showEditCateDialog = (id: number) => {
-    console.log(id);
     editCateDialogVisible.value = true;
     editCateId.value = id;
     axios.get(`categories/${id}`)
@@ -279,7 +277,6 @@ const showEditCateDialog = (id: number) => {
             if (res.meta.status !== 200) {
                 return ElMessage.error('获取分类信息失败');
             }
-            console.log(res.data);
             editCateForm.cat_name = res.data.cat_name;
         });
 };
