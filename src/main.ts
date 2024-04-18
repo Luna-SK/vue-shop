@@ -21,9 +21,17 @@ import 'vxe-table/lib/style.css'
 
 import { api } from '@/utils/serverInfo'
 
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
+
 axios.defaults.baseURL = api
 axios.interceptors.request.use((config) => {
+  NProgress.start()
   config.headers.Authorization = window.sessionStorage.getItem('token')
+  return config
+})
+axios.interceptors.response.use((config) => {
+  NProgress.done()
   return config
 })
 

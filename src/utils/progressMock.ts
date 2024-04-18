@@ -65,7 +65,7 @@ const progressData: any = {
 }
 
 const mockProgress = () => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         setTimeout(() => {
             resolve(progressData)
         }, 200)
