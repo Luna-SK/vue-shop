@@ -56,6 +56,7 @@ declare module 'vue' {
     HomeModule: typeof import('./src/components/HomeModule.vue')['default']
     LoginModule: typeof import('./src/components/LoginModule.vue')['default']
     OrderList: typeof import('./src/components/order/OrderList.vue')['default']
+    ReportChart: typeof import('./src/components/report/ReportChart.vue')['default']
     RightsList: typeof import('./src/components/power/RightsList.vue')['default']
     RightsLIst: typeof import('./src/components/power/RightsLIst.vue')['default']
     RolesList: typeof import('./src/components/power/RolesList.vue')['default']

@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- breadcrumb navigation -->
-        <el-breadcrumb :separate-icon="ArrowRight">
+        <el-breadcrumb :separator-icon="ArrowRight">
             <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
             <el-breadcrumb-item>角色管理</el-breadcrumb-item>
             <el-breadcrumb-item>角色列表</el-breadcrumb-item>
@@ -40,7 +40,7 @@
                                     <el-col :span="18">
                                         <el-tag size="large" type="warning" v-for="item3 in item2.children"
                                             :key="item3.id" closable @close="removeRightById(row, item3.id)">{{
-            item3.authName }}</el-tag>
+                                            item3.authName }}</el-tag>
                                     </el-col>
                                 </el-row>
                             </el-col>
