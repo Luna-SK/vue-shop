@@ -80,6 +80,7 @@ const login = () => {
     axios.post('/login', loginForm).then((res) => {
       if (res.data.meta.status !== 200) {
         ElMessage.error('登录失败')
+        return
       }
       ElMessage.success('登录成功')
       window.sessionStorage.setItem('token', res.data.data.token)

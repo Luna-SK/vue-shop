@@ -31,3 +31,4 @@ coverage
 
 stats.html
 Dockerfile
+nginx.conf
