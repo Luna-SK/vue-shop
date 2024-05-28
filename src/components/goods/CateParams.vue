@@ -27,7 +27,7 @@
                     <el-button type="primary" size="large" :disabled="isBtnDisbaled"
                         @click="addDialogVisible = true">添加参数</el-button>
                     <!-- dynamic parameters table -->
-                    <el-table :data="manyTableData" row-key="id" order stripe>
+                    <el-table :data="manyTableData" row-key="attr_id" order stripe>
                         <!-- expand row -->
                         <el-table-column type="expand">
                             <template #default="{ row }">
@@ -60,7 +60,7 @@
                     <el-button type="primary" size="large" :disabled="isBtnDisbaled"
                         @click="addDialogVisible = true">添加属性</el-button>
                     <!-- static attributes table -->
-                    <el-table :data="onlyTableData" row-key="id" border stripe>
+                    <el-table :data="onlyTableData" row-key="attr_id" border stripe>
                         <!-- expand row -->
                         <el-table-column type="expand">
                             <template #default="{ row }">
@@ -195,6 +195,7 @@ const getParamsData = () => {
         if (res.meta.status !== 200 && !isBtnDisbaled.value) {
             return ElMessage.error('获取参数列表失败！');
         }
+        console.log(res.data);
         res.data.forEach((item: any) => {
             item.attr_vals = item.attr_vals ? item.attr_vals.split(' ') : [];
             // control textarea visibility

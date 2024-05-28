@@ -262,7 +262,7 @@ const removeRoleById = (id: number) => {
 
 const removeRightById = (role: any, rightId: number) => {
     ElMessageBox.confirm(
-        '此操作将永久删除该角色，是否继续?',
+        '此操作将永久删除该权限，是否继续?',
         '提示',
         {
             confirmButtonText: '确定',
