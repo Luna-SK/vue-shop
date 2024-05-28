@@ -2,7 +2,7 @@
   <el-container class="home-container">
     <el-header>
       <div>
-        <img src="../assets/head.png" alt="logo">
+        <img src="../assets/head.png" alt="logo" />
         <span>电商后台管理系统</span>
       </div>
       <el-button type="info" @click="logout">退出</el-button>
@@ -12,24 +12,51 @@
       <el-aside :width="isCollapse ? '64px' : '200px'">
         <div class="toggle-button" @click="toggleCollaspse">|||</div>
         <!-- aside menu -->
-        <el-menu :collapse="isCollapse" :collapse-transition="false" active-text-color="#409eff"
-          background-color="#333744" text-color="#fff" unique-opened router :default-active="activePath">
+        <el-menu
+          :collapse="isCollapse"
+          :collapse-transition="false"
+          active-text-color="#409eff"
+          background-color="#333744"
+          text-color="#fff"
+          unique-opened
+          router
+          :default-active="activePath"
+        >
           <!-- L1 menu -->
           <el-sub-menu v-for="item in menuList" :key="item.id" :index="item.id + ''">
             <!-- template of L1 menu -->
             <template #title>
               <!-- icon -->
-              <UserFilled style="width: 1em; height: 1em; margin-right: 10px" v-if="item.id === 125" />
-              <DocumentCopy style="width: 1em; height: 1em; margin-right: 10px" v-else-if="item.id === 103" />
-              <Goods style="width: 1em; height: 1em; margin-right: 10px" v-else-if="item.id === 101" />
-              <Box style="width: 1em; height: 1em; margin-right: 10px" v-else-if="item.id === 102" />
-              <TrendCharts style="width: 1em; height: 1em; margin-right: 10px" v-else-if="item.id === 145" />
+              <UserFilled
+                style="width: 1em; height: 1em; margin-right: 10px"
+                v-if="item.id === 125"
+              />
+              <DocumentCopy
+                style="width: 1em; height: 1em; margin-right: 10px"
+                v-else-if="item.id === 103"
+              />
+              <Goods
+                style="width: 1em; height: 1em; margin-right: 10px"
+                v-else-if="item.id === 101"
+              />
+              <Box
+                style="width: 1em; height: 1em; margin-right: 10px"
+                v-else-if="item.id === 102"
+              />
+              <TrendCharts
+                style="width: 1em; height: 1em; margin-right: 10px"
+                v-else-if="item.id === 145"
+              />
               <!-- text -->
               <span>{{ item.authName }}</span>
             </template>
             <!-- L2 menu -->
-            <el-menu-item v-for="subItem in item.children" :key="subItem.id" :index="'/' + subItem.path"
-              @click="savNavState('/' + subItem.path)">
+            <el-menu-item
+              v-for="subItem in item.children"
+              :key="subItem.id"
+              :index="'/' + subItem.path"
+              @click="savNavState('/' + subItem.path)"
+            >
               <!-- icon -->
               <el-icon>
                 <Menu />
@@ -50,45 +77,45 @@
 </template>
 
 <script setup lang="ts">
-import router from '@/router';
-import axios from 'axios';
-import { ElMessage } from 'element-plus';
-import { onMounted, ref } from 'vue';
+import router from '@/router'
+import axios from 'axios'
+import { ElMessage } from 'element-plus'
+import { onMounted, ref } from 'vue'
 
 const logout = () => {
-  sessionStorage.removeItem('token');
-  router.push('/login');
-};
+  sessionStorage.removeItem('token')
+  router.push('/login')
+}
 
-const menuList: any = ref([]);
+const menuList: any = ref([])
 
 const getMenuList = async () => {
-  const { data: res } = await axios.get('menus');
+  const { data: res } = await axios.get('menus')
   if (res.meta.status !== 200) {
-    return ElMessage.error('获取菜单列表失败');
+    return ElMessage.error('获取菜单列表失败')
   }
-  menuList.value = res.data;
-};
+  menuList.value = res.data
+}
 
-const isCollapse = ref(false);
+const isCollapse = ref(false)
 
 // toggle to collapse and expand the aside menu
 const toggleCollaspse = () => {
-  isCollapse.value = !isCollapse.value;
-};
+  isCollapse.value = !isCollapse.value
+}
 
-const activePath = ref('');
+const activePath = ref('')
 
 // save the active state of the navigation
 const savNavState = (path: string) => {
-  window.sessionStorage.setItem('activePath', path);
-  activePath.value = path;
-};
+  window.sessionStorage.setItem('activePath', path)
+  activePath.value = path
+}
 
 onMounted(() => {
-  getMenuList();
-  activePath.value = window.sessionStorage.getItem('activePath') ?? '';
-});
+  getMenuList()
+  activePath.value = window.sessionStorage.getItem('activePath') ?? ''
+})
 </script>
 
 <style lang="less" scoped>
@@ -105,7 +132,7 @@ onMounted(() => {
   color: #fff;
   font-size: 20px;
 
-  >div {
+  > div {
     display: flex;
     align-items: center;
 

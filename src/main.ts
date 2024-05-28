@@ -21,8 +21,8 @@ import 'vxe-table/lib/style.css'
 
 import { api } from '@/utils/serverInfo'
 
-import NProgress from 'nprogress';
-import 'nprogress/nprogress.css';
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 
 axios.defaults.baseURL = api
 axios.interceptors.request.use((config) => {

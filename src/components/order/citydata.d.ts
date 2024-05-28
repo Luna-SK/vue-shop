@@ -1,2 +1,2 @@
-declare module 'citydata';
-export default citydata;
+declare module 'citydata'
+export default citydata
