@@ -84,6 +84,7 @@ import { onMounted, ref } from 'vue'
 
 const logout = () => {
   sessionStorage.removeItem('token')
+  sessionStorage.removeItem('activePath')
   router.push('/login')
 }
 
