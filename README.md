@@ -1,5 +1,11 @@
 # Vue-Shop
 
+## Student Information
+
+> **Student Name**: 祁建栋
+>
+> **Student ID**: 22219131154
+
 ## Project Brief
 
 > **Project**: E-commerce Management Platform
